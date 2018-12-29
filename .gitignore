@@ -1,0 +1,7 @@
+__pycache__/
+*.DS_Store
+*.idea
+venv/
+*.db
+flask_session/
+*.jpg

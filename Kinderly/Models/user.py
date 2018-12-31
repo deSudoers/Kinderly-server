@@ -14,6 +14,7 @@ class UserModel(db.Model):
     last_name = db.Column("LastName", db.String(80))
     age = db.Column("Age", db.Integer)
     properties = db.relationship("PropertyModel", cascade="all,delete,delete-orphan")
+    favourites = db.Column("Favourties", db.String)
     image = db.Column("Image", db.String)
     dtm_added = db.Column("DtmAdded", db.DateTime, default=datetime.datetime.utcnow())
 
@@ -45,6 +46,7 @@ class UserModel(db.Model):
         self.last_name = last_name
         self.age = age
         self.image = image
+        self.favourites = ""
         self.dtm_dded = datetime.datetime.utcnow()
 
     @classmethod

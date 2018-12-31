@@ -49,7 +49,8 @@ class UserManager:
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "age": user.age,
-                "image": user.image
+                "image": user.image,
+                "favourites": user.favourites
             }
         }
         if show_owned:

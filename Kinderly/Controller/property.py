@@ -30,6 +30,7 @@ class PropertyManager:
         user = property.user
 
         return {
+            "property_id": property.property_id,
             "address": property.address,
             "price": property.price,
             "location": property.location,
@@ -37,8 +38,9 @@ class PropertyManager:
             "extras": property.extras,
             "rooms": rm.RoomManager.rooms(property),
             "num_rooms": property.num_rooms,
-            "user": um.UserManager.info(show_owned=False),
-            "date_added": str(property.dtm_added)
+            "user": um.UserManager.info(user, show_owned=False)["user"],
+            "date_added": str(property.dtm_added),
+            "images": {k: v for k, v in enumerate(property.images.split())}
         }
 
     @classmethod
@@ -90,7 +92,7 @@ class PropertyManager:
         PropertyModel.fetch(property_id).delete()
 
     @classmethod
-    def filter(cls, address="India", min_price=0.0, max_price=100000, num_rooms=None, capacity=None, has_attach_bath=None):
+    def filter(cls, address="", min_price=0.0, max_price=100000, num_rooms=None, capacity=None, has_attach_bath=None):
         queries = [PropertyModel.address.like("%" + address + "%"), PropertyModel.price.between(min_price, max_price)]
 
         if num_rooms:
@@ -101,9 +103,11 @@ class PropertyManager:
 
         if has_attach_bath:
             queries.append(RoomModel.has_attach_bath.is_(has_attach_bath))
+
         property_list = PropertyModel.query.join(RoomModel).filter(sqlalchemy.and_(*queries)).all()
 
         properties = {}
+
         for i, property in zip(range(len(property_list)), property_list):
             properties[i] = {
                 "property_id": property.property_id,
@@ -111,12 +115,20 @@ class PropertyManager:
                 "price": property.price,
                 "type": property.type,
                 "num_rooms": property.num_rooms,
-                "images": {
-                    0: "https://cdn.pixabay.com/photo/2016/11/18/17/46/architecture-1836070_1280.jpg",
-                    1: "https://cdn.pixabay.com/photo/2014/07/10/17/18/large-home-389271_1280.jpg",
-                    2: "https://cdn.pixabay.com/photo/2016/06/24/10/47/architecture-1477041_1280.jpg"
-                }
+                "images": {k: v for k, v in enumerate(property.images.split())}
             }
+
+        user = um.UserManager.current_user()
+        favs = user.favourites.split()
+        fav_properties = {}
+        i = 0
+        for p in favs:
+            if PropertyManager.exists(int(p)):
+                fav_properties[i] = int(p)
+                i += 1
+
+        properties["favourites"] = fav_properties
+
         return properties
 
     @classmethod

@@ -16,10 +16,9 @@ db = SQLAlchemy(app)
 
 # Session Configuration
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SECURE"] = False  # TODO: On production set to True
-# PERMANENT_SESSION_LIFETIME  # TODO: Set value on production
+app.config["SESSION_COOKIE_SECURE"] = False
+PERMANENT_SESSION_LIFETIME = 2592000
 app.config["SESSION_TYPE"] = "filesystem"
-# SESSION_PERMANENT # TODO: On production set to False
 app.config["SESSION_USE_SIGNER"] = True
 # app.config["SESSION_SQLALCHEMY"] = db
 # app.config["SESSION_SQLALCHEMY_TABLE"] = "Session"
@@ -70,3 +69,8 @@ api.add_resource(Room, '/room/<int:room_id>', '/room')
 from Kinderly.Resources.property import Properties
 api.add_resource(Properties, '/properties')
 
+from Kinderly.Resources.property import PropertyFavourites
+api.add_resource(PropertyFavourites, '/favourite')
+
+from Kinderly.Resources.property import PropertyImage
+api.add_resource(PropertyImage, '/property/<int:property_id>/image')

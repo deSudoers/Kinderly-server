@@ -17,6 +17,7 @@ class PropertyModel(db.Model):
     num_rooms = db.Column("NumRooms", db.Integer)
     extras = db.Column("Extras", db.String)
     rooms = db.relationship("RoomModel", cascade="all,delete,delete-orphan")
+    images = db.Column("Images", db.String)
     dtm_added = db.Column("DtmAdded", db.DateTime, default=datetime.datetime.utcnow())
 
     schema = {
@@ -52,7 +53,7 @@ class PropertyModel(db.Model):
         }
     }
 
-    def __init__(self, user_id, address=None, price=0.0, type=None, extras=None, location="0, 0"):
+    def __init__(self, user_id, address=None, price=0.0, type=None, extras=None, location="0, 0", images=""):
         self.user_id = user_id
         self.address = address
         self.price = price
@@ -60,6 +61,7 @@ class PropertyModel(db.Model):
         self.extras = extras
         self.num_rooms = 0
         self.location = location
+        self.images = images
         self.dtm_dded = datetime.datetime.utcnow()
 
     @classmethod
